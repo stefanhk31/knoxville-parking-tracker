@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import Map from './Map';
+import Map from './Containers/Map/Map';
 import logo from './logo.svg';
 import './App.css';
 

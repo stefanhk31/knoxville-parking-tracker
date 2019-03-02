@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import MapGL, { Marker, NavigationControl } from 'react-map-gl';
+import garages from '../Parking Data/ParkingGarages';
 
 const mapbox_token = process.env.REACT_APP_MAPBOX_API;
 
@@ -42,9 +43,26 @@ class Map extends Component {
         this.setState({ viewport })
     };
 
+    //Build markers for parking garages
+    _renderMarkers = (point, index) => {
+            return (
+                <Marker
+                  key={`marker-${index}`}
+                  latitude={point.coordinates.latitude}
+                  longitude={point.coordinates.longitude}
+                  offsetLeft={-point.coordinates.latitude * .25}
+                  offsetTop={-point.coordinates.latitude * .75}
+                >
+                    <i
+                    className="fas fa fa-map-pin fa-2x parking-pin"
+                  ></i>
+                </Marker>
+              )
+        
+    }
+
     render() {
         const { viewport } = this.state;
-        console.log(mapbox_token)
         return (
             <MapGL
                 {...viewport}
@@ -52,6 +70,10 @@ class Map extends Component {
                 mapboxApiAccessToken={mapbox_token}
                 onViewportChange={this._updateViewport}
             >
+
+            {garages.map(this._renderMarkers)}
+
+
                 <div className="nav" style={navStyle}>
                     <NavigationControl onViewportChange={this._updateViewport} />
                 </div>

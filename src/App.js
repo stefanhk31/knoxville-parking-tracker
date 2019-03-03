@@ -1,13 +1,15 @@
 import React, { Component } from 'react';
 import Map from './Containers/Map/Map';
-import logo from './logo.svg';
 import './App.css';
+import TitleBanner from './Containers/UI/TitleBanner';
+
 
 class App extends Component {
   render() {
 
     return (      
-      <div className="App">
+      <div className="parent-app">
+          <TitleBanner />
           <Map />
       </div>
     );

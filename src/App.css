@@ -1,3 +1,30 @@
+.app {
+  display: flex;
+}
+
+
+
+.title-banner {
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+  align-self: center;
+  justify-self: center;
+  border: 3px solid blue;
+  color: white;
+  background-color: blue;
+}
+
+.title-header {
+  display: flex;
+}
+
+.user-login {
+  display: flex;
+  flex-direction: column;
+}
+
+
 .parking-avail {
   color: green;
 }

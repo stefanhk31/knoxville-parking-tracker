@@ -72,8 +72,8 @@ class Map extends Component {
                 key={`marker-${index}`}
                 latitude={point.coordinates.latitude}
                 longitude={point.coordinates.longitude}
-                offsetLeft={-point.coordinates.latitude * .25}
-                offsetTop={-point.coordinates.latitude * .75}
+                offsetLeft={ -point.coordinates.latitude * .25}
+                offsetTop={ -point.coordinates.latitude * .75}
             >
 
                 <i

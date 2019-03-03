@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
-import MapGL, { Marker, NavigationControl } from 'react-map-gl';
+import MapGL, { Marker, NavigationControl, Popup } from 'react-map-gl';
 import garages from '../Parking Data/ParkingGarages';
+import GarageInfo from '../Parking Data/GarageInfo';
 
 const mapbox_token = process.env.REACT_APP_MAPBOX_API;
 
@@ -27,7 +28,8 @@ class Map extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            viewport: initViewport
+            viewport: initViewport,
+            popupinfo: null
         };
     }
 
@@ -45,20 +47,44 @@ class Map extends Component {
 
     //Build markers for parking garages
     _renderMarkers = (point, index) => {
-            return (
-                <Marker
-                  key={`marker-${index}`}
-                  latitude={point.coordinates.latitude}
-                  longitude={point.coordinates.longitude}
-                  offsetLeft={-point.coordinates.latitude * .25}
-                  offsetTop={-point.coordinates.latitude * .75}
-                >
-                    <i
+        return (
+            <Marker
+                key={`marker-${index}`}
+                latitude={point.coordinates.latitude}
+                longitude={point.coordinates.longitude}
+                offsetLeft={-point.coordinates.latitude * .25}
+                offsetTop={-point.coordinates.latitude * .75}
+            >
+
+                <i
                     className="fas fa fa-map-pin fa-2x parking-pin"
-                  ></i>
-                </Marker>
-              )
-        
+                    onClick={() => this.handleUpdatePopupInfo(point)}
+                ></i>
+            </Marker>
+        )
+    }
+
+    //Show popups when markers clicked
+    handleUpdatePopupInfo = (popupInfo) => {
+        this.setState({
+            popupInfo,
+        });
+    }
+
+    _renderPopup() {
+        const { popupInfo } = this.state;
+
+        return popupInfo && (
+            <Popup tipSize={5}
+                anchor="top"
+                latitude={popupInfo.coordinates.latitude}
+                longitude={popupInfo.coordinates.longitude}
+                closeOnClick={true}
+                onClose={() => this.handleUpdatePopupInfo(null)}
+            >
+                <GarageInfo {...popupInfo} />
+            </Popup>
+        )
     }
 
     render() {
@@ -71,7 +97,9 @@ class Map extends Component {
                 onViewportChange={this._updateViewport}
             >
 
-            {garages.map(this._renderMarkers)}
+                {garages.map(this._renderMarkers)}
+
+                {this._renderPopup()}
 
 
                 <div className="nav" style={navStyle}>

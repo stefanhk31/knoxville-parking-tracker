@@ -1,7 +1,11 @@
-.App {
-}
-
 .parking-pin {
-  color: blue;
+  color: green;
 }
 
+.parking-pin-warning {
+  color: orange;
+}
+
+.parking-pin-full {
+  color: red;
+}

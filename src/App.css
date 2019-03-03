@@ -1,11 +1,22 @@
-.parking-pin {
+.parking-avail {
   color: green;
 }
 
-.parking-pin-warning {
+.parking-avail-warning {
   color: orange;
 }
 
-.parking-pin-full {
+.parking-full {
   color: red;
+}
+
+.user-dot {
+  color: red;
+  animation: pulse 1s infinite;
+}
+
+@keyframes pulse {
+  50% {
+    opacity: .5;
+  }
 }

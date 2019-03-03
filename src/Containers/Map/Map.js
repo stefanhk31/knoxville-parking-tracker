@@ -22,6 +22,12 @@ const initViewport = {
     height: window.innerHeight - 1
 }
 
+//set initial user coordinates
+const initUser = {
+    latitude: 35.964416,
+    longitude: -83.918803
+}
+
 class Map extends Component {
     _isMounted = false;
 
@@ -29,12 +35,26 @@ class Map extends Component {
         super(props);
         this.state = {
             viewport: initViewport,
-            popupinfo: null
+            popupinfo: null,
+            user: initUser
         };
     }
 
     componentDidMount() {
         this._isMounted = true;
+
+        if (this._isMounted && navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition((position) => {
+                const userCoordinates = {
+                    latitude: position.coords.latitude,
+                    longitude: position.coords.longitude
+                }
+
+                this.setState({
+                    user: userCoordinates
+                })
+            })
+        }
     }
 
     componentWillUnmount() {
@@ -57,7 +77,7 @@ class Map extends Component {
             >
 
                 <i
-                    className="fas fa fa-map-pin fa-2x parking-pin"
+                    className="fas fa-parking fa-2x parking-avail"
                     onClick={() => this.handleUpdatePopupInfo(point)}
                 ></i>
             </Marker>
@@ -105,6 +125,16 @@ class Map extends Component {
                 <div className="nav" style={navStyle}>
                     <NavigationControl onViewportChange={this._updateViewport} />
                 </div>
+
+                <Marker 
+                    latitude={this.state.user.latitude}
+                    longitude={this.state.user.longitude}
+                    offsetLeft={-this.state.user.latitude * .25}
+                    offsetTop={-this.state.user.latitude * .75}
+                >
+                   <i class="fas fa-circle user-dot"></i>
+                </Marker>
+
             </MapGL>
         )
 

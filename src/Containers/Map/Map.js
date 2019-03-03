@@ -51,6 +51,11 @@ class Map extends Component {
                 }
 
                 this.setState({
+                    viewport: {
+                        ...initViewport,
+                        latitude: userCoordinates.latitude,
+                        longitude: userCoordinates.longitude
+                    },
                     user: userCoordinates
                 })
             })

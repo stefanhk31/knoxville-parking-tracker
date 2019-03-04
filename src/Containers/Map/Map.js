@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
-import MapGL, { Marker, NavigationControl } from 'react-map-gl';
+import MapGL, { Marker, NavigationControl, Popup } from 'react-map-gl';
 import garages from '../Parking Data/ParkingGarages';
+import GarageInfo from '../Parking Data/GarageInfo';
 
 const mapbox_token = process.env.REACT_APP_MAPBOX_API;
 
@@ -21,18 +22,44 @@ const initViewport = {
     height: window.innerHeight - 1
 }
 
+//set initial user coordinates
+const initUser = {
+    latitude: 35.964416,
+    longitude: -83.918803
+}
+
 class Map extends Component {
     _isMounted = false;
 
     constructor(props) {
         super(props);
         this.state = {
-            viewport: initViewport
+            viewport: initViewport,
+            popupinfo: null,
+            user: initUser
         };
     }
 
     componentDidMount() {
         this._isMounted = true;
+
+        if (this._isMounted && navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition((position) => {
+                const userCoordinates = {
+                    latitude: position.coords.latitude,
+                    longitude: position.coords.longitude
+                }
+
+                this.setState({
+                    viewport: {
+                        ...initViewport,
+                        latitude: userCoordinates.latitude,
+                        longitude: userCoordinates.longitude
+                    },
+                    user: userCoordinates
+                })
+            })
+        }
     }
 
     componentWillUnmount() {
@@ -45,20 +72,44 @@ class Map extends Component {
 
     //Build markers for parking garages
     _renderMarkers = (point, index) => {
-            return (
-                <Marker
-                  key={`marker-${index}`}
-                  latitude={point.coordinates.latitude}
-                  longitude={point.coordinates.longitude}
-                  offsetLeft={-point.coordinates.latitude * .25}
-                  offsetTop={-point.coordinates.latitude * .75}
-                >
-                    <i
-                    className="fas fa fa-map-pin fa-2x parking-pin"
-                  ></i>
-                </Marker>
-              )
-        
+        return (
+            <Marker
+                key={`marker-${index}`}
+                latitude={point.coordinates.latitude}
+                longitude={point.coordinates.longitude}
+                offsetLeft={ -point.coordinates.latitude * .25}
+                offsetTop={ -point.coordinates.latitude * .75}
+            >
+
+                <i
+                    className="fas fa-parking fa-2x parking-avail"
+                    onClick={() => this.handleUpdatePopupInfo(point)}
+                ></i>
+            </Marker>
+        )
+    }
+
+    //Show popups when markers clicked
+    handleUpdatePopupInfo = (popupInfo) => {
+        this.setState({
+            popupInfo,
+        });
+    }
+
+    _renderPopup() {
+        const { popupInfo } = this.state;
+
+        return popupInfo && (
+            <Popup tipSize={5}
+                anchor="top"
+                latitude={popupInfo.coordinates.latitude}
+                longitude={popupInfo.coordinates.longitude}
+                closeOnClick={true}
+                onClose={() => this.handleUpdatePopupInfo(null)}
+            >
+                <GarageInfo {...popupInfo} />
+            </Popup>
+        )
     }
 
     render() {
@@ -71,12 +122,24 @@ class Map extends Component {
                 onViewportChange={this._updateViewport}
             >
 
-            {garages.map(this._renderMarkers)}
+                {garages.map(this._renderMarkers)}
+
+                {this._renderPopup()}
 
 
                 <div className="nav" style={navStyle}>
                     <NavigationControl onViewportChange={this._updateViewport} />
                 </div>
+
+                <Marker 
+                    latitude={this.state.user.latitude}
+                    longitude={this.state.user.longitude}
+                    offsetLeft={-this.state.user.latitude * .25}
+                    offsetTop={-this.state.user.latitude * .75}
+                >
+                   <i class="fas fa-circle user-dot"></i>
+                </Marker>
+
             </MapGL>
         )
 

@@ -1,7 +1,55 @@
-.App {
+.app {
+  display: flex;
 }
 
-.parking-pin {
-  color: blue;
+.title-banner {
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+  align-self: center;
+  justify-self: center;
+  border: 3px solid blue;
+  color: white;
+  background-color: blue;
+  padding: 5px;
 }
 
+@media screen and (min-width: 600px) {
+  .title-banner {
+    flex-direction: row;
+    justify-content: space-between;
+  }
+}
+
+.title-header {
+  display: flex;
+}
+
+.user-login {
+  display: flex;
+  flex-direction: column;
+}
+
+
+.parking-avail {
+  color: green;
+}
+
+.parking-avail-warning {
+  color: orange;
+}
+
+.parking-full {
+  color: red;
+}
+
+.user-dot {
+  color: red;
+  animation: pulse 1s infinite;
+}
+
+@keyframes pulse {
+  50% {
+    opacity: .5;
+  }
+}
